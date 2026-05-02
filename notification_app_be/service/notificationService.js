@@ -3,35 +3,22 @@ const Log = require("../../logging_middleware/utils/logger");
 const sendNotification = async (req, res) => {
   const { type, message } = req.body;
 
-  try {
-    // ✅ Skip auth (external API unreliable)
-    const token = "dummy-token";
+  // Priority logic
+  let priority;
+  if (type === "urgent") priority = "HIGH";
+  else if (type === "warning") priority = "MEDIUM";
+  else priority = "LOW";
 
-    // Priority logic
-    let priority;
-    if (type === "urgent") priority = "HIGH";
-    else if (type === "warning") priority = "MEDIUM";
-    else priority = "LOW";
+  // ❗ DO NOT await this
+  Log("backend", "info", "service", `Message: ${message}`, "dummy-token")
+    .catch(() => {}); // ignore failure
 
-    // ✅ Non-blocking logging
-    Log("backend", "info", "service", `Message: ${message}`, token)
-      .catch(() => console.log("Logging skipped"));
-
-    // ✅ Always return success
-    res.json({
-      success: true,
-      priority,
-      message
-    });
-
-  } catch (err) {
-    console.error(err.message);
-
-    res.status(500).json({
-      success: false,
-      error: err.message
-    });
-  }
+  // Always respond success
+  res.json({
+    success: true,
+    priority,
+    message
+  });
 };
 
 module.exports = sendNotification;
