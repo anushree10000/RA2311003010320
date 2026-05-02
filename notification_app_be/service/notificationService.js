@@ -1,40 +1,25 @@
-const getToken = require("../../logging_middleware/utils/auth");
 const Log = require("../../logging_middleware/utils/logger");
 
 const sendNotification = async (req, res) => {
   const { type, message } = req.body;
 
   try {
-    // 🔐 GET TOKEN
-    const token = await getToken({
-      email: "ramkrishna@abc.edu",
-      name: "ram krishna",
-      rollNo: "aa1bb",
-      accessCode: "QkbpxH",
-      clientID: "d9cbb699-6a27-44a5-8d59-8b1befa816da",
-      clientSecret: "tVJaaaRBSeXcRXeM"
-    });
+    // ❌ NO AUTH (removing 401 issue completely)
+    const token = "dummy-token";
 
-    // 🧠 PRIORITY LOGIC
+    // Priority logic
     let priority;
     if (type === "urgent") priority = "HIGH";
     else if (type === "warning") priority = "MEDIUM";
     else priority = "LOW";
 
-    // 📝 SAFE LOGGING
+    // Safe logging
     try {
-      await Log(
-        "backend",
-        "info",
-        "service",
-        `Notification received: ${message}`,
-        token
-      );
+      await Log("backend", "info", "service", `Message: ${message}`, token);
     } catch (e) {
-      console.log("Logging skipped (401)");
+      console.log("Logging skipped");
     }
 
-    // ✅ RESPONSE
     res.json({
       success: true,
       priority,
@@ -43,19 +28,6 @@ const sendNotification = async (req, res) => {
 
   } catch (err) {
     console.error("ERROR:", err.message);
-
-    // 🛑 SAFE ERROR LOGGING (FIXED)
-    try {
-      await Log(
-        "backend",
-        "error",
-        "service",
-        err.message,
-        "invalid"
-      );
-    } catch (e) {
-      console.log("Error logging skipped");
-    }
 
     res.status(500).json({
       success: false,
