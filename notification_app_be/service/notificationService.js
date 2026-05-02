@@ -22,13 +22,11 @@ const sendNotification = async (req, res) => {
     else priority = "LOW";
 
     // 📝 LOGGING (MANDATORY)
-    await Log(
-      "backend",
-      "info",
-      "service",
-      `Notification received: ${message}`,
-      token
-    );
+   try {
+  await Log("backend", "info", "service", "Notification received", token);
+} catch (e) {
+  console.log("Logging skipped");
+}
 
     // ✅ RESPONSE
     res.json({
