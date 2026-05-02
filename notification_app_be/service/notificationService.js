@@ -6,15 +6,14 @@ const sendNotification = async (req, res) => {
   const { type, message } = req.body;
 
   try {
-    const token = await getToken({
-      email: "your_email",
-      name: "your_name",
-      rollNo: "your_roll",
-      accessCode: "your_access_code",
-      clientID: "your_client_id",
-      clientSecret: "your_client_secret"
-    });
-
+  const token = await getToken({
+  email: "ramkrishna@abc.edu",
+  name: "ram krishna",
+  rollNo: "aa1bb",
+  accessCode: "xgAsNC",
+  clientID: "d9cbb699-6a27-44a5-8d59-8b1befa816da",
+  clientSecret: "tVJaaaRBSeXcRXeM"
+});
     // Priority logic
     let priority;
     if (type === "urgent") priority = "HIGH";
